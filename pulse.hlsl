@@ -1,7 +1,10 @@
+uniform float Pulse_multiplier = 0.5f;
+uniform float Pulse_shift = 0.5f; // coefficient from 0.0 to 1.0
+uniform float Pulse_period = 4.0f; // in seconds
+
 float4 mainImage(VertData v_in) : TARGET
 {
-    float multiplier = (0.1f * sin(elapsed_time * 0.4f)) + 0.9f;
-    if (multiplier < 0.0f)
-        multiplier = multiplier * -1.0f;
+    const float PI = 3.14159265f;
+    float multiplier = Pulse_shift + (Pulse_multiplier * sin(elapsed_time * (2 * PI / Pulse_period)));
     return multiplier * image.Sample(textureSampler, v_in.uv);
 }

@@ -6,5 +6,5 @@ float4 mainImage(VertData v_in) : TARGET
 {
     const float PI = 3.14159265f;
     float multiplier = Pulse_shift + (Pulse_multiplier * sin(elapsed_time * (2 * PI / Pulse_period)));
-    return multiplier * image.Sample(textureSampler, v_in.uv);
+    return float4(multiplier, multiplier, multiplier, 1.0f) * image.Sample(textureSampler, v_in.uv);
 }

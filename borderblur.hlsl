@@ -37,30 +37,31 @@ float blurDescending(float from, float to, float current)
     return y;
 }
 
-float4 mainImage(VertData v_in) : TARGET
+float4 render(float2 uv_in)
 {
-    float4 color = image.Sample(textureSampler, v_in.uv);
+    const float2 uv_pixel_interval = 1.0 / builtin_uv_size;
+    float4 color = image.Sample(builtin_texture_sampler, uv_in);
 
     const float blurLeft_uv_from = Crop_left * uv_pixel_interval.x;
     const float blurRight_uv_to = 1.0f - (Crop_right * uv_pixel_interval.x);
     const float blurTop_uv_from = Crop_top * uv_pixel_interval.y;
     const float blurBottom_uv_to = 1.0f - (Crop_bottom * uv_pixel_interval.y);
 
-    if (v_in.uv.x < blurLeft_uv_from || v_in.uv.x > blurRight_uv_to ||
-        v_in.uv.y < blurTop_uv_from || v_in.uv.y > blurBottom_uv_to)
+    if (uv_in.x < blurLeft_uv_from || uv_in.x > blurRight_uv_to ||
+        uv_in.y < blurTop_uv_from || uv_in.y > blurBottom_uv_to)
         return float4(color.x, color.y, color.z, 0.0f);
 
     float blurLeft_uv_to = blurLeft_uv_from + ((float)Blur_left * uv_pixel_interval.x);
-    color.w = color.w * blurAscending(blurLeft_uv_from, blurLeft_uv_to, v_in.uv.x);
+    color.w = color.w * blurAscending(blurLeft_uv_from, blurLeft_uv_to, uv_in.x);
 
     float blurRight_uv_from = blurRight_uv_to - ((float)Blur_right * uv_pixel_interval.x);
-    color.w = color.w * blurDescending(blurRight_uv_from, blurRight_uv_to, v_in.uv.x);
+    color.w = color.w * blurDescending(blurRight_uv_from, blurRight_uv_to, uv_in.x);
 
-    float blurTop_uv_to = (float)Blur_top * uv_pixel_interval.y;
-    color.w = color.w * blurAscending(blurTop_uv_from, blurTop_uv_to, v_in.uv.y);
+    float blurTop_uv_to = blurTop_uv_from + ((float)Blur_top * uv_pixel_interval.y);
+    color.w = color.w * blurAscending(blurTop_uv_from, blurTop_uv_to, uv_in.y);
 
     float blurBottom_uv_from = blurBottom_uv_to - ((float)Blur_bottom * uv_pixel_interval.y);
-    color.w = color.w * blurDescending(blurBottom_uv_from, blurBottom_uv_to, v_in.uv.y);
+    color.w = color.w * blurDescending(blurBottom_uv_from, blurBottom_uv_to, uv_in.y);
 
     return color;
 }

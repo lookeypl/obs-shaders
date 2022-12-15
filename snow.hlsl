@@ -37,7 +37,7 @@ uniform float Scene_zoom = 2.0f; // affect how zoomed in the scene is
 
 float rand(float2 uv_in)
 {
-    return frac(sin(dot(uv_in, float2(12.9898, 78.233))) * 43758.5453);
+    return frac(sin(dot(uv_in, float2(12.9898f, 78.233f))) * 437.5854f);
 }
 
 float4 render(float2 uv_in)
@@ -53,19 +53,19 @@ float4 render(float2 uv_in)
             float downSpeed = -Fall_speed - (sin(builtin_elapsed_time * 0.4f + float(k + i * 20)) + 0.6f) * 0.00008f;
 
             float2 uv = uv_in + float2(
-                0.02f * sin((builtin_elapsed_time + float(k * 6185)) * 0.4f + i) * (i * 0.2f),
-                downSpeed * (builtin_elapsed_time + float(k * 3128)) * (1.0f / float(i))
+                0.02f * sin((builtin_elapsed_time + float(k * 61)) * 0.6f + i) * (i * 0.2f),
+                downSpeed * (builtin_elapsed_time + float(k * 31)) * (1.0f / float(i))
             );
             float2 uvStep = ceil(uv * cellSize - 0.5f) / cellSize;
-            float x = frac(sin(dot(uvStep, float2(12.9898 + float(k) * 12.0, 78.233 + float(k) * 315.156))) * 43758.5453 + float(k) * 12.0) - 0.5;
-            float y = frac(sin(dot(uvStep, float2(62.2364 + float(k) * 23.0, 94.674 + float(k) * 95.0))) * 62159.8432 + float(k) * 12.0) - 0.5;
+            float x = frac(sin(dot(uvStep, float2(12.9898f + float(k) * 12.0f, 78.233f + float(k) * 315.156f))) * 4.375854f + float(k) * 12.0) - 0.5;
+            float y = frac(sin(dot(uvStep, float2(62.2364f + float(k) * 23.0f, 94.674f + float(k) * 95.0f))) * 6.215984f + float(k) * 12.0) - 0.5;
 
             float randomMagnitude1 = sin(builtin_elapsed_time * 2.5f) * 0.7f / cellSize;
             float randomMagnitude2 = cos(builtin_elapsed_time * 2.5f) * 0.7f / cellSize;
 
             float d = 5.0f * distance((uvStep + float2(x * sin(y), y) * randomMagnitude1 + float2(y, x) * randomMagnitude2), uv);
 
-            float omiVal = frac(sin(dot(uvStep, float2(32.4691, 94.615))) * 31572.1684);
+            float omiVal = frac(sin(dot(uvStep, float2(32.4691f, 94.615f))) * 3157.216f);
             if (omiVal < Snow_density)
             {
                 float newd = (x + 1) * 0.4f * clamp(1.9f - d * (15.0f + (x * 6.3f)) * (cellSize / 2.0f), 0.0f, 1.0f);

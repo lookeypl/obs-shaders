@@ -7,29 +7,29 @@
  */
 
 #pragma shaderfilter set Snow_iterations__min 1
-#pragma shaderfilter set Snow_iterations__description "Snow iterations"
+#pragma shaderfilter set Snow_iterations__description Snow iterations
 uniform int Snow_iterations = 12; // affect how many snow flakes are rendered - GPU-EXPENSIVE
 
 #pragma shaderfilter set Snow_layers__min 1
-#pragma shaderfilter set Snow_layers__description "Snow layers"
+#pragma shaderfilter set Snow_layers__description Snow layers
 uniform int Snow_layers = 2; // multiply/layer Snow_loops - GPU-EXPENSIVE
 
 #pragma shaderfilter set Snow_density__slider true
-#pragma shaderfilter set Snow_density__description "Snow density"
+#pragma shaderfilter set Snow_density__description Snow density
 #pragma shaderfilter set Snow_density__min 0.08
 #pragma shaderfilter set Snow_density__max 0.6
 #pragma shaderfilter set Snow_density__step 0.04
 uniform float Snow_density = 0.08f; // affect how dense the snow is
 
 #pragma shaderfilter set Fall_speed__slider true
-#pragma shaderfilter set Fall_speed__description "Snow fall speed"
+#pragma shaderfilter set Fall_speed__description Snow fall speed
 #pragma shaderfilter set Fall_speed__min 0.3
 #pragma shaderfilter set Fall_speed__max 1.0
 #pragma shaderfilter set Fall_speed__step 0.05
 uniform float Fall_speed = 0.3f; // affect how fast the snow flakes fall
 
 #pragma shaderfilter set Scene_zoom__slider true
-#pragma shaderfilter set Scene_zoom__description "Scene zoom"
+#pragma shaderfilter set Scene_zoom__description Scene zoom
 #pragma shaderfilter set Scene_zoom__min 1.0
 #pragma shaderfilter set Scene_zoom__max 5.0
 #pragma shaderfilter set Scene_zoom__step 0.05

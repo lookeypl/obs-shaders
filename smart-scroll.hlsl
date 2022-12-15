@@ -1,7 +1,26 @@
+/**
+ * Smart-scroll shader
+ *
+ * Provides a bit more facility to scrolling an OBS source compared to native scroller.
+ * Allows to "stop" the scroll every loop, modify speed and introduce a gap between loops.
+ */
+
+#pragma shaderfilter set Cut_width__min 0
+#pragma shaderfilter set Cut_width__description Source cut width (px)
 uniform int Cut_width = 0; // in pixels
+
+#pragma shaderfilter set Scroll_loop_empty_space__min 0
+#pragma shaderfilter set Scroll_loop_empty_space__description Gap width (px)
 uniform int Scroll_loop_empty_space = 50; // in pixels
+
+#pragma shaderfilter set Scroll_wait_seconds__min 0.0
+#pragma shaderfilter set Scroll_wait_seconds__description Scroll pause per loop (s)
 uniform float Scroll_wait_seconds = 2.0f; // in seconds
-uniform int Scroll_speed = 40.0f; // in pixels/second
+
+#pragma shaderfilter set Scroll_speed__min 0
+#pragma shaderfilter set Scroll_speed__description Scroll speed (px/s)
+uniform int Scroll_speed = 40; // in pixels/second
+
 
 float4 render(float2 uv_in)
 {

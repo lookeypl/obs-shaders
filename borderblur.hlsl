@@ -1,11 +1,41 @@
+/**
+ * Border blur
+ *
+ * Applies an alpha-based blur to OBS source around the edges, including crop functionality
+ */
+
+#pragma shaderfilter set Blur_left__min 0
+#pragma shaderfilter set Blur_left__description Left edge blur width (px)
 uniform int Blur_left = 20;
+
+#pragma shaderfilter set Blur_right__min 0
+#pragma shaderfilter set Blur_right__description Right edge blur width (px)
 uniform int Blur_right = 20;
+
+#pragma shaderfilter set Blur_top__min 0
+#pragma shaderfilter set Blur_top__description Top edge blur width (px)
 uniform int Blur_top = 20;
+
+#pragma shaderfilter set Blur_bottom__min 0
+#pragma shaderfilter set Blur_bottom__description Bottom edge blur width (px)
 uniform int Blur_bottom = 20;
+
+#pragma shaderfilter set Crop_left__min 0
+#pragma shaderfilter set Crop_left__description Left edge crop (px)
 uniform int Crop_left = 0;
+
+#pragma shaderfilter set Crop_right__min 0
+#pragma shaderfilter set Crop_right__description Right edge crop (px)
 uniform int Crop_right = 0;
+
+#pragma shaderfilter set Crop_top__min 0
+#pragma shaderfilter set Crop_top__description Top edge crop (px)
 uniform int Crop_top = 0;
+
+#pragma shaderfilter set Crop_bottom__min 0
+#pragma shaderfilter set Crop_bottom__description Bottom edge crop (px)
 uniform int Crop_bottom = 0;
+
 
 float blurAscending(float from, float to, float current)
 {

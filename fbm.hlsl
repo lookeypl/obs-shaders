@@ -6,10 +6,22 @@
  * Based on https://www.shadertoy.com/view/tdG3Rd
  */
 
+#pragma shaderfilter set FBM_color__description FBM color (RGB)
 uniform float4 FBM_color = {0.1f, 0.1, 0.1f, 1.0f};
+
+#pragma shaderfilter set FBM_alpha__min 0.0
+#pragma shaderfilter set FBM_alpha__max 1.0
+#pragma shaderfilter set FBM_alpha__description FBM transparency
 uniform float FBM_alpha = 1.0f;
+
+#pragma shaderfilter set Intensity__min 0.0
+#pragma shaderfilter set Intensity__description Intensity
 uniform float Intensity = 0.5f;
+
+#pragma shaderfilter set Anim_speed__min 0.0
+#pragma shaderfilter set Anim_speed__description Animation speed
 uniform float Anim_speed = 0.8f;
+
 
 float rand(float2 n)
 {

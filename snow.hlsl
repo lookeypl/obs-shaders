@@ -6,59 +6,64 @@
  * Based on https://www.shadertoy.com/view/Mdt3Df
  */
 
-#pragma shaderfilter set Snow_iterations__min 1
-#pragma shaderfilter set Snow_iterations__description Snow iterations
-uniform int Snow_iterations = 12; // affect how many snow flakes are rendered - GPU-EXPENSIVE
+#define FILTER
+#include "common.hlsl"
 
-#pragma shaderfilter set Snow_layers__min 1
-#pragma shaderfilter set Snow_layers__description Snow layers
-uniform int Snow_layers = 2; // multiply/layer Snow_loops - GPU-EXPENSIVE
+// affect how many snow flakes are rendered - GPU-EXPENSIVE
+uniform int Snow_iterations<
+    string name = "Snow iterations";
+> = 12;
 
-#pragma shaderfilter set Snow_density__slider true
-#pragma shaderfilter set Snow_density__description Snow density
-#pragma shaderfilter set Snow_density__min 0.08
-#pragma shaderfilter set Snow_density__max 0.6
-#pragma shaderfilter set Snow_density__step 0.04
-uniform float Snow_density = 0.08f; // affect how dense the snow is
+// multiply/layer Snow_loops - GPU-EXPENSIVE
+uniform int Snow_layers<
+    string name = "Snow layers";
+> = 2;
 
-#pragma shaderfilter set Fall_speed__slider true
-#pragma shaderfilter set Fall_speed__description Snow fall speed
-#pragma shaderfilter set Fall_speed__min 0.3
-#pragma shaderfilter set Fall_speed__max 1.0
-#pragma shaderfilter set Fall_speed__step 0.05
-uniform float Fall_speed = 0.3f; // affect how fast the snow flakes fall
+// affect how dense the snow is
+uniform float Snow_density<
+    string name = "Snow density";
+    string field_type = "slider";
+    float minimum = 0.08f;
+    float maximum = 0.6f;
+    float step = 0.04f;
+> = 0.08f;
 
-#pragma shaderfilter set Scene_zoom__slider true
-#pragma shaderfilter set Scene_zoom__description Scene zoom
-#pragma shaderfilter set Scene_zoom__min 1.0
-#pragma shaderfilter set Scene_zoom__max 5.0
-#pragma shaderfilter set Scene_zoom__step 0.05
-uniform float Scene_zoom = 2.0f; // affect how zoomed in the scene is
+// affect how fast the snow flakes fall
+uniform float Fall_speed<
+    string name = "Fall speed";
+    string field_type = "slider";
+    float minimum = 0.3f;
+    float maximum = 1.0f;
+    float step = 0.05f;
+> = 0.3f;
 
-float rand(float2 n)
-{
-    return frac(sin(dot(n, float2(12.9898f, 4.1414f))) * 43758.5453f);
-}
+uniform float Scene_zoom<
+    string name = "Scene zoom";
+    string field_type = "slider";
+    float minimum = 1.0f;
+    float maximum = 5.0f;
+    float step = 0.05f;
+> = 2.0f; // affect how zoomed in the scene is
 
-float4 render(float2 uv_in)
+float4 render(VSInfo vtx) : TARGET
 {
     float snow = 0.0f;
-    const float random = rand(uv_in);
-    const float time = builtin_elapsed_time_since_enabled;
+    const float random = rand(vtx.texcoord0.xy);
+    const float time = Time.x + 16200;
 
     for (int k = 0; k < Snow_layers; k++)
     {
-        for (int i = 1; i < Snow_iterations; i++)
+        for (int i = 1; i <= Snow_iterations; i++)
         {
             float cellSize = 3.0f + i / (Scene_zoom - 0.9);
-            float downSpeed = -Fall_speed - (sin(time * 0.4f + float(k + i * 20)) * 0.00008f);
+            float downSpeed = Fall_speed + (sin(time * 0.4f + float(k + i * 20)) * 0.0008f);
 
-            float2 uv = uv_in + float2(
+            float2 uv = vtx.texcoord0.xy + float2(
                 0.02f * sin((time + float(k * 61)) * 0.6f + i) * (i * 0.2f),
-                downSpeed * (time + float(k * 15)) * 0.2f - (i + 1) * (1.0f / float(i))
+                downSpeed * (time + float(k * 15), 1.0) * 0.2f - (i + 1) * (1.0f / float(i))
             );
             float2 uvStep = ceil(uv * cellSize - 0.5f) / cellSize;
-            float x = frac(sin(dot(uvStep, float2(12.9898f + float(k) * 12.0f, 78.233f + float(k) * 315.156f))) * 4.375854f + float(k) * 12.0) - 0.5;
+            float x = frac(sin(dot(uvStep, float2(12.9898f + float(k) * 10.0f, 78.233f + float(k) * 315.156f))) * 4.375854f + float(k) * 12.0) - 0.5;
             float y = frac(sin(dot(uvStep, float2(62.2364f + float(k) * 23.0f, 94.674f + float(k) * 95.0f))) * 6.215984f + float(k) * 12.0) - 0.5;
 
             float randomMagnitude1 = sin(time * 2.5f) * 0.7f / cellSize;
@@ -75,5 +80,14 @@ float4 render(float2 uv_in)
         }
     }
 
-    return image.Sample(builtin_texture_sampler, uv_in) + float4(snow, snow, snow, snow) + random * 0.02f;
+    return InputA.Sample(DefaultSampler, vtx.texcoord0.xy) + float4(snow, snow, snow, snow) + random * 0.02f;
+}
+
+technique Snow
+{
+    pass
+    {
+        vertex_shader = DefaultVS(vtx);
+        pixel_shader  = render(vtx);
+    }
 }

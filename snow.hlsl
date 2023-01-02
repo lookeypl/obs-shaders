@@ -35,33 +35,34 @@ uniform float Fall_speed = 0.3f; // affect how fast the snow flakes fall
 #pragma shaderfilter set Scene_zoom__step 0.05
 uniform float Scene_zoom = 2.0f; // affect how zoomed in the scene is
 
-float rand(float2 uv_in)
+float rand(float2 n)
 {
-    return frac(sin(dot(uv_in, float2(12.9898f, 78.233f))) * 437.5854f);
+    return frac(sin(dot(n, float2(12.9898f, 4.1414f))) * 43758.5453f);
 }
 
 float4 render(float2 uv_in)
 {
     float snow = 0.0f;
-    float random = rand(uv_in);
+    const float random = rand(uv_in);
+    const float time = builtin_elapsed_time_since_enabled;
 
     for (int k = 0; k < Snow_layers; k++)
     {
-        for (int i = 0; i < Snow_iterations; i++)
+        for (int i = 1; i < Snow_iterations; i++)
         {
             float cellSize = 3.0f + i / (Scene_zoom - 0.9);
-            float downSpeed = -Fall_speed - (sin(builtin_elapsed_time * 0.4f + float(k + i * 20)) + 0.6f) * 0.00008f;
+            float downSpeed = -Fall_speed - (sin(time * 0.4f + float(k + i * 20)) * 0.00008f);
 
             float2 uv = uv_in + float2(
-                0.02f * sin((builtin_elapsed_time + float(k * 61)) * 0.6f + i) * (i * 0.2f),
-                downSpeed * (builtin_elapsed_time + float(k * 31)) * (1.0f / float(i))
+                0.02f * sin((time + float(k * 61)) * 0.6f + i) * (i * 0.2f),
+                downSpeed * (time + float(k * 15)) * 0.2f - (i + 1) * (1.0f / float(i))
             );
             float2 uvStep = ceil(uv * cellSize - 0.5f) / cellSize;
             float x = frac(sin(dot(uvStep, float2(12.9898f + float(k) * 12.0f, 78.233f + float(k) * 315.156f))) * 4.375854f + float(k) * 12.0) - 0.5;
             float y = frac(sin(dot(uvStep, float2(62.2364f + float(k) * 23.0f, 94.674f + float(k) * 95.0f))) * 6.215984f + float(k) * 12.0) - 0.5;
 
-            float randomMagnitude1 = sin(builtin_elapsed_time * 2.5f) * 0.7f / cellSize;
-            float randomMagnitude2 = cos(builtin_elapsed_time * 2.5f) * 0.7f / cellSize;
+            float randomMagnitude1 = sin(time * 2.5f) * 0.7f / cellSize;
+            float randomMagnitude2 = cos(time * 2.5f) * 0.7f / cellSize;
 
             float d = 5.0f * distance((uvStep + float2(x * sin(y), y) * randomMagnitude1 + float2(y, x) * randomMagnitude2), uv);
 

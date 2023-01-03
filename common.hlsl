@@ -5,7 +5,9 @@
  */
 
 #define PI 3.14159265f
+#define PI2 6.2831853f
 
+// These are all automatic uniforms provided by StreamFX
 uniform float4x4 ViewProj<
     bool automatic = true;
 >;
@@ -66,4 +68,9 @@ VSInfo DefaultVS(VSInfo vtx) {
 float rand(float2 n)
 {
     return frac(sin(dot(n, float2(12.9898f, 4.1414f))) * 43758.5453f);
+}
+
+float mod(float x, float y)
+{
+    return x - y * floor(x / y);
 }

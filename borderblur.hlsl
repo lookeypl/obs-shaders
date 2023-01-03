@@ -33,17 +33,17 @@ uniform int Crop_left<
 > = 0;
 
 uniform int Crop_right<
-    string name = "Left edge crop (px)";
+    string name = "Right edge crop (px)";
     int minimum = 0;
 > = 0;
 
 uniform int Crop_top<
-    string name = "Left edge crop (px)";
+    string name = "Top edge crop (px)";
     int minimum = 0;
 > = 0;
 
 uniform int Crop_bottom<
-    string name = "Left edge crop (px)";
+    string name = "Bottom edge crop (px)";
     int minimum = 0;
 > = 0;
 

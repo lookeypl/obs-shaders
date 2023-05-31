@@ -6,22 +6,24 @@
  * Based on https://www.shadertoy.com/view/tdG3Rd
  */
 
-#define FILTER
 #include "common.hlsl"
 
-uniform float4 FBM_color<
-    string name = "FBM Color (RGBA)";
-> = {0.1f, 0.1, 0.1f, 1.0f}; // TODO set type to color picker when available
+#pragma shaderfilter set FBM_color__description FBM color (RGB)
+uniform float4 FBM_color = {0.1f, 0.1, 0.1f, 1.0f};
 
-uniform float Intensity<
-    string name = "Intensity";
-    float minimum = 0.0f;
-> = 0.5f;
+#pragma shaderfilter set FBM_alpha__min 0.0
+#pragma shaderfilter set FBM_alpha__max 1.0
+#pragma shaderfilter set FBM_alpha__description FBM transparency
+uniform float FBM_alpha = 1.0f;
 
-uniform float Anim_speed<
-    string name = "Animation speed";
-    float minimum = 0.1f;
-> = 0.8f;
+#pragma shaderfilter set Intensity__min 0.0
+#pragma shaderfilter set Intensity__description Intensity
+uniform float Intensity = 0.5f;
+
+#pragma shaderfilter set Anim_speed__min 0.0
+#pragma shaderfilter set Anim_speed__description Animation speed
+uniform float Anim_speed = 0.8f;
+
 
 float noise(float2 p)
 {
@@ -43,7 +45,7 @@ float fbm(float2 uv)
     float f = 0.0;
     float2 p = uv;
 
-    f += 0.500000f * noise(p + (Time.x * Anim_speed));
+    f += 0.500000f * noise(p + (builtin_elapsed_time * Anim_speed));
 
     p = mul(mtx, p * 2.02f);
     f += 0.031250f * noise(p);
@@ -58,26 +60,16 @@ float fbm(float2 uv)
     f += 0.062500f * noise(p);
 
     p = mul(mtx, p * 2.04f);
-    f += 0.015625f * noise(p + sin(Time.x * Anim_speed));
+    f += 0.015625f * noise(p + sin(builtin_elapsed_time * Anim_speed));
 
     return f / 0.96875f;
 }
 
-float4 render(VSInfo vtx) : TARGET
+float4 render(float2 uv_in)
 {
-    const float2 uv_in = vtx.texcoord0.xy;
-
-    float4 color = InputA.Sample(DefaultSampler, uv_in);
+    float4 color = image.Sample(builtin_texture_sampler, uv_in);
 
     float shade = fbm(uv_in + fbm(uv_in + fbm(uv_in)));
-    return lerp(color, FBM_color, shade * Intensity);
-}
-
-technique FBM
-{
-    pass
-    {
-        vertex_shader = DefaultVS(vtx);
-        pixel_shader = render(vtx);
-    }
+    float4 fbmColor = float4(FBM_color.xyz, FBM_alpha);
+    return lerp(color, fbmColor, shade * Intensity);
 }

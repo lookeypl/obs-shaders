@@ -4,48 +4,39 @@
  * Applies an alpha-based blur to OBS source around the edges, including crop functionality
  */
 
-#define FILTER
 #include "common.hlsl"
 
-uniform int Blur_left<
-    string name = "Left edge blur width (px)";
-    int minimum = 0;
-> = 20;
+#pragma shaderfilter set Blur_left__min 0
+#pragma shaderfilter set Blur_left__description Left edge blur width (px)
+uniform int Blur_left = 20;
 
-uniform int Blur_right<
-    string name = "Right edge blur width (px)";
-    int minimum = 0;
-> = 20;
+#pragma shaderfilter set Blur_right__min 0
+#pragma shaderfilter set Blur_right__description Right edge blur width (px)
+uniform int Blur_right = 20;
 
-uniform int Blur_top<
-    string name = "Top edge blur width (px)";
-    int minimum = 0;
-> = 20;
+#pragma shaderfilter set Blur_top__min 0
+#pragma shaderfilter set Blur_top__description Top edge blur width (px)
+uniform int Blur_top = 20;
 
-uniform int Blur_bottom<
-    string name = "Bottom edge blur width (px)";
-    int minimum = 0;
-> = 20;
+#pragma shaderfilter set Blur_bottom__min 0
+#pragma shaderfilter set Blur_bottom__description Bottom edge blur width (px)
+uniform int Blur_bottom = 20;
 
-uniform int Crop_left<
-    string name = "Left edge crop (px)";
-    int minimum = 0;
-> = 0;
+#pragma shaderfilter set Crop_left__min 0
+#pragma shaderfilter set Crop_left__description Left edge crop (px)
+uniform int Crop_left = 0;
 
-uniform int Crop_right<
-    string name = "Right edge crop (px)";
-    int minimum = 0;
-> = 0;
+#pragma shaderfilter set Crop_right__min 0
+#pragma shaderfilter set Crop_right__description Right edge crop (px)
+uniform int Crop_right = 0;
 
-uniform int Crop_top<
-    string name = "Top edge crop (px)";
-    int minimum = 0;
-> = 0;
+#pragma shaderfilter set Crop_top__min 0
+#pragma shaderfilter set Crop_top__description Top edge crop (px)
+uniform int Crop_top = 0;
 
-uniform int Crop_bottom<
-    string name = "Bottom edge crop (px)";
-    int minimum = 0;
-> = 0;
+#pragma shaderfilter set Crop_bottom__min 0
+#pragma shaderfilter set Crop_bottom__description Bottom edge crop (px)
+uniform int Crop_bottom = 0;
 
 
 float blurAscending(float from, float to, float current)
@@ -78,12 +69,10 @@ float blurDescending(float from, float to, float current)
     return y;
 }
 
-float4 render(VSInfo vtx) : TARGET
+float4 render(float2 uv_in)
 {
-    const float2 uv_pixel_interval = ViewSize.zw;
-    const float2 uv_in = vtx.texcoord0.xy;
-
-    float4 color = InputA.Sample(DefaultSampler, uv_in);
+    const float2 uv_pixel_interval = 1.0 / builtin_uv_size;
+    float4 color = image.Sample(builtin_texture_sampler, uv_in);
 
     const float blurLeft_uv_from = Crop_left * uv_pixel_interval.x;
     const float blurRight_uv_to = 1.0f - (Crop_right * uv_pixel_interval.x);
@@ -107,13 +96,4 @@ float4 render(VSInfo vtx) : TARGET
     color.w = color.w * blurDescending(blurBottom_uv_from, blurBottom_uv_to, uv_in.y);
 
     return color;
-}
-
-technique Blur
-{
-    pass
-    {
-        vertex_shader = DefaultVS(vtx);
-        pixel_shader = render(vtx);
-    }
 }

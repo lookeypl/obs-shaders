@@ -6,7 +6,7 @@
  * Based on https://www.shadertoy.com/view/Mdt3Df
  */
 
-#include "common.hlsl"
+#include "../common.hlsl"
 
 #pragma shaderfilter set Snow_iterations__min 1
 #pragma shaderfilter set Snow_iterations__description Snow iterations

@@ -6,7 +6,7 @@
  * Really nothing big, but also my first shader and you have to start somewhere...
  */
 
-#include "common.hlsl"
+#include "../common.hlsl"
 
 #pragma shaderfilter set Pulse_multiplier__description Pulse multiplier
 uniform float Pulse_multiplier = 0.5f;

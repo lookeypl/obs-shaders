@@ -4,7 +4,7 @@
  * Applies an alpha-based blur to OBS source around the edges, including crop functionality
  */
 
-#include "common.hlsl"
+#include "../common.hlsl"
 
 #pragma shaderfilter set Blur_left__min 0
 #pragma shaderfilter set Blur_left__description Left edge blur width (px)

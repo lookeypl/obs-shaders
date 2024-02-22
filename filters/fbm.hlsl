@@ -6,7 +6,7 @@
  * Based on https://www.shadertoy.com/view/tdG3Rd
  */
 
-#include "common.hlsl"
+#include "../common.hlsl"
 
 #pragma shaderfilter set FBM_color__description FBM color (RGB)
 uniform float4 FBM_color = {0.1f, 0.1, 0.1f, 1.0f};
@@ -23,6 +23,9 @@ uniform float Intensity = 0.5f;
 #pragma shaderfilter set Anim_speed__min 0.0
 #pragma shaderfilter set Anim_speed__description Animation speed
 uniform float Anim_speed = 0.8f;
+
+#pragma shaderfilter set Include_source_transparency__description Include source transparency
+uniform bool Include_source_transparency = false;
 
 
 float noise(float2 p)
@@ -71,5 +74,10 @@ float4 render(float2 uv_in)
 
     float shade = fbm(uv_in + fbm(uv_in + fbm(uv_in)));
     float4 fbmColor = float4(FBM_color.xyz, FBM_alpha);
-    return lerp(color, fbmColor, shade * Intensity);
+    float4 lerpColor = lerp(color, fbmColor, shade * Intensity);
+
+    if (Include_source_transparency)
+        lerpColor.w *= color.w;
+
+    return lerpColor;
 }

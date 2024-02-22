@@ -5,7 +5,7 @@
  * Allows to "stop" the scroll every loop, modify speed and introduce a gap between loops.
  */
 
-#include "common.hlsl"
+#include "../common.hlsl"
 
 #pragma shaderfilter set Cut_width__min 0
 #pragma shaderfilter set Cut_width__description Source cut width (px)

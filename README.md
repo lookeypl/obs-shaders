@@ -1,13 +1,13 @@
 OBS Shaders
 ===========
 
-A collection of my shaders used with [obs-shaderfilter-plus plugin](https://github.com/Limeth/obs-shaderfilter-plus).
+A collection of my shaders used with [obs-shaderfilter plugin](https://github.com/exeldro/obs-shaderfilter/).
 
 How to use
 ----------
 
-1. Install obs-shaderfilter-plus plugin.
-1. Add a "ShaderFilter Plus" effect/video filter to one of your sources.
+1. Install obs-shaderfilter plugin.
+1. Add a "User-defined shader" filter to one of your sources or as a transition.
 1. Tick the mark next to "Load shader code from file" and point at one of the files. Set parameters if applicable.
 
 What shaders do

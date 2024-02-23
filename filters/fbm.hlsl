@@ -6,26 +6,28 @@
  * Based on https://www.shadertoy.com/view/tdG3Rd
  */
 
+#define FILTER
 #include "../common.hlsl"
 
-#pragma shaderfilter set FBM_color__description FBM color (RGB)
-uniform float4 FBM_color = {0.1f, 0.1, 0.1f, 1.0f};
+uniform float4 FBM_color<
+    string label = "FBM Color";
+> = {0.1f, 0.1, 0.1f, 1.0f};
 
-#pragma shaderfilter set FBM_alpha__min 0.0
-#pragma shaderfilter set FBM_alpha__max 1.0
-#pragma shaderfilter set FBM_alpha__description FBM transparency
-uniform float FBM_alpha = 1.0f;
+uniform float Intensity<
+    string label = "Intensity";
+    float minimum = 0.0;
+    float step = 0.05;
+> = 0.5f;
 
-#pragma shaderfilter set Intensity__min 0.0
-#pragma shaderfilter set Intensity__description Intensity
-uniform float Intensity = 0.5f;
+uniform float Anim_speed<
+    string label = "Animation speed";
+    float minimum = 0.0;
+    float step = 0.1;
+> = 0.8f;
 
-#pragma shaderfilter set Anim_speed__min 0.0
-#pragma shaderfilter set Anim_speed__description Animation speed
-uniform float Anim_speed = 0.8f;
-
-#pragma shaderfilter set Include_source_transparency__description Include source transparency
-uniform bool Include_source_transparency = false;
+uniform bool Include_source_transparency<
+    string label = "Include source transparency";
+> = false;
 
 
 float noise(float2 p)
@@ -48,7 +50,7 @@ float fbm(float2 uv)
     float f = 0.0;
     float2 p = uv;
 
-    f += 0.500000f * noise(p + (builtin_elapsed_time * Anim_speed));
+    f += 0.500000f * noise(p + (elapsed_time * Anim_speed));
 
     p = mul(mtx, p * 2.02f);
     f += 0.031250f * noise(p);
@@ -63,18 +65,18 @@ float fbm(float2 uv)
     f += 0.062500f * noise(p);
 
     p = mul(mtx, p * 2.04f);
-    f += 0.015625f * noise(p + sin(builtin_elapsed_time * Anim_speed));
+    f += 0.015625f * noise(p + sin(elapsed_time * Anim_speed));
 
     return f / 0.96875f;
 }
 
-float4 render(float2 uv_in)
+float4 mainImage(VertData v_in): TARGET
 {
-    float4 color = image.Sample(builtin_texture_sampler, uv_in);
+    const float2 uv_in = v_in.uv;
+    float4 color = image.Sample(textureSampler, uv_in);
 
     float shade = fbm(uv_in + fbm(uv_in + fbm(uv_in)));
-    float4 fbmColor = float4(FBM_color.xyz, FBM_alpha);
-    float4 lerpColor = lerp(color, fbmColor, shade * Intensity);
+    float4 lerpColor = lerp(color, FBM_color, shade * Intensity);
 
     if (Include_source_transparency)
         lerpColor.w *= color.w;

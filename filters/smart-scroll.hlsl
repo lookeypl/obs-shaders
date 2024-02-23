@@ -5,45 +5,53 @@
  * Allows to "stop" the scroll every loop, modify speed and introduce a gap between loops.
  */
 
+#define FILTER
 #include "../common.hlsl"
 
-#pragma shaderfilter set Cut_width__min 0
-#pragma shaderfilter set Cut_width__description Source cut width (px)
-uniform int Cut_width = 0; // in pixels
+uniform int Cut_width<
+    string label = "Source cut width (px)";
+    int minimum = 0;
+> = 0; // in pixels
 
-#pragma shaderfilter set Scroll_loop_empty_space__min 0
-#pragma shaderfilter set Scroll_loop_empty_space__description Gap width (px)
-uniform int Scroll_loop_empty_space = 50; // in pixels
+uniform int Scroll_loop_empty_space<
+    string label = "Gap width (px)";
+    int minimum = 0;
+> = 50; // in pixels
 
-#pragma shaderfilter set Scroll_wait_seconds__min 0.0
-#pragma shaderfilter set Scroll_wait_seconds__description Scroll pause per loop (s)
-uniform float Scroll_wait_seconds = 2.0f; // in seconds
+uniform float Scroll_wait_seconds<
+    string label = "Scroll pause per loop (s)";
+    float minimum = 0.0;
+    float step = 0.1;
+> = 2.0f; // in seconds
 
-#pragma shaderfilter set Scroll_speed__min 0
-#pragma shaderfilter set Scroll_speed__description Scroll speed (px/s)
-uniform int Scroll_speed = 40; // in pixels/second
+uniform int Scroll_speed<
+    string label = "Scroll speed (px/s)";
+    int minimum = 0;
+> = 40; // in pixels/second
 
 
-float4 render(float2 uv_in)
+float4 mainImage(VertData v_in): TARGET
 {
-    // early exit if there's nothing to cut
-    if ((Cut_width == 0) || (builtin_uv_size.x < Cut_width))
-        return image.Sample(builtin_texture_sampler, uv_in);
+    float2 uv_in = v_in.uv;
 
-    float uvCutPoint = (float)(Cut_width) / builtin_uv_size.x;
+    // early exit if there's nothing to cut
+    if ((Cut_width == 0) || (uv_size.x < Cut_width))
+        return image.Sample(textureSampler, uv_in);
+
+    float uvCutPoint = (float)(Cut_width) / uv_size.x;
 
     if (uv_in.x > uvCutPoint)
         return float4(0.0f, 0.0f, 0.0f, 0.0f);
 
     const float emptySpace = (float)Scroll_loop_empty_space;
-    float uvEmptySpace = emptySpace / builtin_uv_size.x;
+    float uvEmptySpace = emptySpace / uv_size.x;
 
-    float uvAnimTime = (float)(builtin_uv_size.x + emptySpace) / Scroll_speed;
+    float uvAnimTime = (float)(uv_size.x + emptySpace) / Scroll_speed;
 
     // pause for Scroll_wait_seconds, scroll for uvAnimTime
     float totalAnimTime = Scroll_wait_seconds + uvAnimTime;
 
-    float curAnimTime = builtin_elapsed_time / totalAnimTime;
+    float curAnimTime = elapsed_time / totalAnimTime;
     float curLoopTime = curAnimTime - (float)((int)curAnimTime);
 
     float switchPoint = Scroll_wait_seconds / totalAnimTime;
@@ -58,5 +66,5 @@ float4 render(float2 uv_in)
             uv_in.x -= (1.0f + uvEmptySpace);
     }
 
-    return image.Sample(builtin_texture_sampler, uv_in);
+    return image.Sample(textureSampler, uv_in);
 }

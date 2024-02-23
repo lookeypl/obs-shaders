@@ -6,42 +6,50 @@
  * Based on https://www.shadertoy.com/view/Mdt3Df
  */
 
+#define FILTER
 #include "../common.hlsl"
 
-#pragma shaderfilter set Snow_iterations__min 1
-#pragma shaderfilter set Snow_iterations__description Snow iterations
-uniform int Snow_iterations = 12; // affect how many snow flakes are rendered - GPU-EXPENSIVE
+uniform int Snow_iterations<
+    string label = "Snow iterations";
+    int minimum = 0;
+> = 12; // affect how many snow flakes are rendered - GPU-EXPENSIVE
 
-#pragma shaderfilter set Snow_layers__min 1
-#pragma shaderfilter set Snow_layers__description Snow layers
-uniform int Snow_layers = 2; // multiply/layer Snow_loops - GPU-EXPENSIVE
+uniform int Snow_layers<
+    string label = "Snow layers";
+    int minimum = 0;
+> = 2; // multiply/layer Snow_loops - GPU-EXPENSIVE
 
-#pragma shaderfilter set Snow_density__slider true
-#pragma shaderfilter set Snow_density__description Snow density
-#pragma shaderfilter set Snow_density__min 0.08
-#pragma shaderfilter set Snow_density__max 0.6
-#pragma shaderfilter set Snow_density__step 0.04
-uniform float Snow_density = 0.08f; // affect how dense the snow is
+uniform float Snow_density<
+    string label = "Snow density";
+    string widget_type = "slider";
+    float minimum = 0.08;
+    float maximum = 0.6;
+    float step = 0.04;
+> = 0.08f; // affect how dense the snow is
 
-#pragma shaderfilter set Fall_speed__slider true
-#pragma shaderfilter set Fall_speed__description Snow fall speed
-#pragma shaderfilter set Fall_speed__min 0.1
-#pragma shaderfilter set Fall_speed__max 1.0
-#pragma shaderfilter set Fall_speed__step 0.05
-uniform float Fall_speed = 0.3f; // affect how fast the snow flakes fall
+uniform float Fall_speed<
+    string label = "Snow fall speed";
+    string widget_type = "slider";
+    float minimum = 0.1;
+    float maximum = 1.0;
+    float step = 0.05;
+> = 0.3f; // affect how fast the snow flakes fall
 
-#pragma shaderfilter set Scene_zoom__slider true
-#pragma shaderfilter set Scene_zoom__description Scene zoom
-#pragma shaderfilter set Scene_zoom__min 1.0
-#pragma shaderfilter set Scene_zoom__max 5.0
-#pragma shaderfilter set Scene_zoom__step 0.05
-uniform float Scene_zoom = 2.0f; // affect how zoomed in the scene is
+uniform float Scene_zoom<
+    string label = "Scene zoom";
+    string widget_type = "slider";
+    float minimum = 1.0;
+    float maximum = 5.0;
+    float step = 0.05;
+> = 2.0f; // affect how zoomed in the scene is
 
-float4 render(float2 uv_in)
+float4 mainImage(VertData v_in): TARGET
 {
+    const float2 uv_in = v_in.uv;
+
     float snow = 0.0f;
     const float random = rand(uv_in);
-    const float time = builtin_elapsed_time;
+    const float time = elapsed_time;
 
     for (int k = 0; k < Snow_layers; k++)
     {
@@ -72,5 +80,5 @@ float4 render(float2 uv_in)
         }
     }
 
-    return image.Sample(builtin_texture_sampler, uv_in) + float4(snow, snow, snow, snow) + random * 0.02f;
+    return image.Sample(textureSampler, uv_in) + float4(snow, snow, snow, snow) + random * 0.02f;
 }

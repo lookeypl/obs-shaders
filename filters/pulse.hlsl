@@ -8,20 +8,30 @@
 
 #include "../common.hlsl"
 
-#pragma shaderfilter set Pulse_multiplier__description Pulse multiplier
-uniform float Pulse_multiplier = 0.5f;
+uniform float Pulse_multiplier<
+    string label = "Pulse multiplier";
+    string widget_type = "slider";
+    float minimum = 0.0f;
+    float maximum = 1.0f;
+    float step = 0.1f;
+> = 0.5f;
 
-#pragma shaderfilter set Pulse_shift__min 0.0
-#pragma shaderfilter set Pulse_shift__max 1.0
-#pragma shaderfilter set Pulse_shift__description Pulse shift
-uniform float Pulse_shift = 0.5f; // coefficient from 0.0 to 1.0
+uniform float Pulse_shift<
+    string label = "Pulse shift";
+    string widget_type = "slider";
+    float minimum = 0.0f;
+    float maximum = 1.0f;
+    float step = 0.05f;
+> = 0.5f; // coefficient from 0.0 to 1.0
 
-#pragma shaderfilter set Pulse_period__min 0.0
-#pragma shaderfilter set Pulse_period__description Pulse period (s)
-uniform float Pulse_period = 4.0f; // in seconds
+uniform float Pulse_period<
+    string label = "Pulse period (s)";
+    float minimum = 0.0f;
+    float step = 0.1f;
+> = 4.0f; // in seconds
 
-float4 render(float2 uv_in)
+float4 mainImage(VertData v_in): TARGET
 {
-    float multiplier = Pulse_shift + (Pulse_multiplier * sin(builtin_elapsed_time * (2 * PI / Pulse_period)));
-    return float4(multiplier, multiplier, multiplier, 1.0f) * image.Sample(builtin_texture_sampler, uv_in);
+    float multiplier = Pulse_shift + (Pulse_multiplier * sin(elapsed_time * (2 * PI / Pulse_period)));
+    return float4(multiplier, multiplier, multiplier, 1.0f) * image.Sample(textureSampler, v_in.uv);
 }

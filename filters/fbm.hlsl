@@ -15,14 +15,18 @@ uniform float4 FBM_color<
 
 uniform float Intensity<
     string label = "Intensity";
+    string widget_type = "slider";
     float minimum = 0.0;
-    float step = 0.05;
+    float maximum = 2.0;
+    float step = 0.02;
 > = 0.5f;
 
 uniform float Anim_speed<
     string label = "Animation speed";
+    string widget_type = "slider";
     float minimum = 0.0;
-    float step = 0.1;
+    float maximum = 5.0;
+    float step = 0.02;
 > = 0.8f;
 
 uniform bool Include_source_transparency<

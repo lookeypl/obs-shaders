@@ -10,42 +10,50 @@
 uniform int Blur_left<
     string label = "Left edge blur width (px)";
     int minimum = 0;
+    int maximum = 4000;
     int step = 1;
 > = 20;
 uniform int Blur_right<
     string label = "Right edge blur width (px)";
     int minimum = 0;
+    int maximum = 4000;
     int step = 1;
 > = 20;
 uniform int Blur_top<
     string label = "Top edge blur width (px)";
     int minimum = 0;
+    int maximum = 4000;
     int step = 1;
 > = 20;
 uniform int Blur_bottom<
     string label = "Bottom edge blur width (px)";
     int minimum = 0;
+    int maximum = 4000;
     int step = 1;
 > = 20;
 
 uniform int Crop_left<
     string label = "Left edge crop (px)";
     int minimum = 0;
+    int maximum = 4000;
     int step = 1;
 > = 0;
 uniform int Crop_right<
     string label = "Right edge crop (px)";
     int minimum = 0;
+    int maximum = 4000;
     int step = 1;
 > = 0;
 uniform int Crop_top<
     string label = "Top edge crop (px)";
     int minimum = 0;
+    int maximum = 4000;
     int step = 1;
 > = 0;
 uniform int Crop_bottom<
     string label = "Bottom edge crop (px)";
     int minimum = 0;
+    int maximum = 4000;
     int step = 1;
 > = 0;
 

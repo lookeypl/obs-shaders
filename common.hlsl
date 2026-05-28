@@ -6,6 +6,14 @@
 #define PI2 6.2831853f
 
 #ifdef FILTER
+
+#ifdef USE_PREVIOUS_IMAGE
+uniform texture2d previous_image;
+#endif // USE_PREVIOUS_IMAGE
+#ifdef USE_PREVIOUS_OUTPUT
+uniform texture2d previous_output;
+#endif // USE_PREVIOUS_OUTPUT
+
 #endif // FILTER
 
 #ifdef TRANSITION
@@ -21,7 +29,6 @@ uniform float transition_time<
 uniform bool convert_linear = true;
 #endif // TRANSITION
 
-
 float rand(float2 n)
 {
     return frac(sin(dot(n, float2(12.9898f, 4.1414f))) * 43758.5453f);
@@ -30,4 +37,9 @@ float rand(float2 n)
 float mod(float x, float y)
 {
     return x - y * floor(x / y);
+}
+
+bool near(float x, float y, float tolerance)
+{
+    return (abs(x - y) <= tolerance);
 }
